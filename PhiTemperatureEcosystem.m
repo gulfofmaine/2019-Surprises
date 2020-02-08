@@ -1,7 +1,7 @@
-function [N,T] = PhiTemperatureEcosystem(tau,sigma,r0, mu, phi, nyrs, envinfo, GAMMA,  N0)
+function [N,T,Rcoef] = PhiTemperatureEcosystem(tau,sigma,r0, mu, phi, nyrs, envinfo, GAMMA,  N0)
 %PHITEMPERATUREECOSYSTEM--neutral ecosystem model under a warming trend 
 %
-% [N, T] = PhiTemperatureEcosystem(tau,sigma,r0, mu, phi, nyrs, envinfo, GAMMA, N0)
+% [N, T,Rcoef] = PhiTemperatureEcosystem(tau,sigma,r0, mu, phi, nyrs, envinfo, GAMMA, N0)
 %
 % tau   = length m vector of temperatures preferences for the m species
 % sigma = length m vector of temerpature variances for the m species
@@ -22,6 +22,9 @@ function [N,T] = PhiTemperatureEcosystem(tau,sigma,r0, mu, phi, nyrs, envinfo, G
 %
 % N will be m-by-nyrs+1 and will contain the abundance in each year
 % T will be nyrs+1-by-1 and will contain the temperatures
+%
+% Rcoef will be the m-by-1 array of the growth coefficients for each
+% species.
 %
 % Andrew Pershing (apershing@gmri.org), 2018
 
@@ -73,7 +76,8 @@ function dN=phitempODE(t,N,Rcoef,tau,sigma,T,mu,phi);
 %PHITEMPODE--ODE function with the phi model
 %
 
-t0=interp1((0:length(T)-1)',T,t);%linearly interpolate temperature
+%t0=interp1((0:length(T)-1)',T,t);%linearly interpolate temperature
+t0=T(fix(t)+1);
 R=Rcoef;
 I=find(N<0);
 N(I)=0;
